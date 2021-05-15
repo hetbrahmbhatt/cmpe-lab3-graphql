@@ -1,4 +1,4 @@
-const PORT = 3001;
+const PORT = 3002;
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static('public'))
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+app.use(cors({ origin: "http://localhost:3006", credentials: true }));
 app.use(
     session({
         key: 'user_sid',
