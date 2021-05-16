@@ -2,10 +2,10 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router'
 import cookie from "react-cookies";
 import BACKEND_URL from '../../config/config'
-// import Modal from 'react-modal';
+import Modal from 'react-modal';
 import _ from 'lodash';
 import axios from 'axios';
-// import AddExpense from './add-expense'
+import AddExpense from './add-expense'
 import moment from 'moment-timezone';
 import grocerylogo from '../../images/grocery.png'
 import camera from '../../images/camera.png'
@@ -65,6 +65,7 @@ export class GroupDescription extends Component {
         }
     }
     async componentDidMount() {
+        console.log(this.state)
         const groupID = this.state.groupID;
         const response = await axios.get(BACKEND_URL + "/groups/description/" + groupID);
         const totalinternaldebt = await axios.get(BACKEND_URL + "/expense/totalinternaldebt/" + groupID);
@@ -324,9 +325,9 @@ export class GroupDescription extends Component {
                                 <h1 style={{ marginTop: "20px" }}>{this.state.groupName}</h1>
                                 <button type="submit" className="btn btn-amber" onClick={this.toggleGroupPopUp} style={{ marginLeft: "70px", marginTop: "25px", height: "40px", width: "250px", backgroundColor: "#FF7F50", color: "white" }} >Add an Expense</button>
                                 <div style={{ height: "200px" }}>
-                                    {/* <Modal style={customStyles} isOpen={this.state.groupPopUp} ariaHideApp={false}>
+                                    <Modal style={customStyles} isOpen={this.state.groupPopUp} ariaHideApp={false}>
                                         <AddExpense groupData={this.state} closePopUp={this.toggleGroupPopUp} />
-                                    </Modal> */}
+                                    </Modal>
                                 </div>
 
                             </div>

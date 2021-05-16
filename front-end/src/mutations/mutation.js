@@ -81,4 +81,29 @@ const updateGroupStatusMutation = gql`
                         }
     }
 `;
-export { userSignUpMutation, userLogin, addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };
+const addExpenseMutation = gql`
+    mutation addExpense(
+        $groupID:String,
+        $groupName:String,
+
+        $userID:String,
+        $currency:String,
+        $description:String,
+        $amount : String
+
+    ){
+        addExpense(  
+            groupID :$groupID,
+            userID : $userID,
+            currency : $currency,
+            description : $description,
+            amount : $amount,
+            groupName : $groupName,
+    
+                        ){
+                            groupID,
+                            groupName
+                        }
+    }
+`;
+export { userSignUpMutation, userLogin, addExpenseMutation, addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };
