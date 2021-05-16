@@ -10,6 +10,7 @@ import { graphql, withApollo } from 'react-apollo';
 import emptyplaceholder from '../../images/empty-placeholder.png'
 import { flowRight as compose } from 'lodash';
 import { getGroupDetails } from '../../queries/queries'
+import { leaveGroupMutation } from '../../mutations/mutation'
 
 
 export class MyGroup extends Component {
@@ -139,6 +140,8 @@ export class MyGroup extends Component {
 export default compose(
     withApollo,
     graphql(getGroupDetails, { name: "getGroupDetails" }),
+    graphql(leaveGroupMutation, { name: "leaveGroupMutation" }),
+
 
 
 )(MyGroup);

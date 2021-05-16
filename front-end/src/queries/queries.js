@@ -39,4 +39,15 @@ query groupSummaryDetails($groupID: String){
   }
   }
 `;
-export { getUserProfile, getGroupDetails, getGroupSummaryDetails };
+const getTotalInternalBalance = gql`
+query groupSummaryDetails($groupID: String){
+  groupSummaryDetails(groupID:$groupID){
+      userID1,
+      userName,
+      userID2,
+      amount,
+      defaultCurrency 
+  }
+  }
+`;
+export { getUserProfile, getGroupDetails, getGroupSummaryDetails,getTotalInternalBalance };

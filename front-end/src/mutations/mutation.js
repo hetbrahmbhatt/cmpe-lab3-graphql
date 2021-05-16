@@ -106,4 +106,21 @@ const addExpenseMutation = gql`
                         }
     }
 `;
-export { userSignUpMutation, userLogin, addExpenseMutation, addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };
+const leaveGroupMutation = gql`
+    mutation addExpense(
+        $groupID:String,
+        $userID:String
+
+    ){
+        addExpense(  
+            groupID :$groupID,
+            userID : $userID,
+    
+                        ){
+                            groupID,
+                        }
+    }
+`;
+
+
+export { userSignUpMutation, userLogin, addExpenseMutation, leaveGroupMutation,addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };

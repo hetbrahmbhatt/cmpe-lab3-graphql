@@ -63,6 +63,18 @@ var addExpenseType = new GraphQLObjectType({
 
     })
 })
+
+var leaveGroupType = new GraphQLObjectType({
+    name: 'leaveGroup',
+    fields: () => ({
+        userID: { type: GraphQLString },
+        groupID: { type: GraphQLString },
+
+    })
+})
+
+
+
 const updateGroupStatusType = new GraphQLObjectType({
     name: 'updateGroupStatusType',
     fields: () => ({
@@ -168,6 +180,22 @@ const RootQuery = new GraphQLObjectType({
                 return docs;
             }
         },
+        getTotalInternalBalance: {
+            type: new GraphQLList(groupSummaryType),
+            args: {
+                groupID: {
+                    type: GraphQLString
+                }
+            },
+            async resolve(parent, args) {
+                DebtsSchema.find({ groupID: args.groupID }).then(docs => {
+                    console.log(docs)
+                    return docs;
+
+                    // res.status(200).send(docs)
+                });
+            }
+        },
     }
 })
 const Mutation = new GraphQLObjectType({
@@ -206,6 +234,46 @@ const Mutation = new GraphQLObjectType({
                 })
             }
         },
+        leaveGroup: {
+            type: leaveGroupType,
+            args: {
+                userID: {
+                    type: GraphQLString
+                },
+                groupID: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                DebtsSchema.find({
+                    $or: [
+                        {
+                            userID1: args.userID,
+                            groupID: args.groupID,
+                            amount: { $ne: 0 }
+                        },
+                        {
+                            userID2: args.userID,
+                            groupID: args.groupID,
+                            amount: { $ne: 0 }
+                        }
+                    ]
+                }).then(response => {
+                    console.log("Response",response)
+                    if (response.length != 0) {
+                    }
+                    else {
+                        userSchema.findByIdAndUpdate({ _id: args.userID }
+                            , { $pull: { acceptedGroups: { groupID: args.groupID } } }, { new: true }
+                        ).then(res => {
+                            if (res) {
+                            }
+                        })
+                    }
+                })
+            }
+        },
+
         userSignUp: {
             type: userType,
             args: {

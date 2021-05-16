@@ -68,15 +68,7 @@ export class GroupDescription extends Component {
         }
     }
     async componentDidMount() {
-        this.props.client.query({
-            query: getGroupSummaryDetails,
 
-            variables: {
-                groupID: this.state.groupID
-            }
-        }).then(response => {
-            console.log(response)
-        })
         console.log(this.props)
         console.log(this.state)
         const groupID = this.state.groupID;

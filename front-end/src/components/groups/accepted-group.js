@@ -7,6 +7,9 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { graphql, withApollo } from 'react-apollo';
+import { flowRight as compose } from 'lodash';
+import { leaveGroupMutation } from '../../mutations/mutation'
 export class AcceptedGroup extends Component {
     constructor(props) {
         super(props);
@@ -29,21 +32,12 @@ export class AcceptedGroup extends Component {
         })
     }
     leaveGroup = (e) => {
-        console.log(this.state);
-        var obj = {
-            userID: cookie.load('id'),
-            groupID: this.state.groupID
-        }
-
-        axios
-            .post(BACKEND_URL + "/groups/leavegroup", obj).then(response => {
-                if (response.status == 200) {
-                    toast.success("Hope you have a great time after leaving the group :)")
-                    window.location.reload();
-                }
-            }).catch(err => {
-                toast.error("Please clear all the dues before leaving the group.")
-            })
+        this.props.leaveGroupMutation(
+            {
+            userID :cookie.load('id'),
+            groupID : this.state.groupID
+            }
+        )
     }
     displayPicture = (name, groupID) => {
         if (name == null) {
@@ -122,5 +116,10 @@ export class AcceptedGroup extends Component {
         )
     }
 }
-export default AcceptedGroup
+export default compose(
+    withApollo,
+    graphql(leaveGroupMutation, { name: "leaveGroupMutation" }),
 
+
+
+)(AcceptedGroup);
