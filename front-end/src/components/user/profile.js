@@ -9,6 +9,7 @@ import { graphql, withApollo } from 'react-apollo';
 import { Query } from "react-apollo";
 import { getUserProfile } from '../../queries/queries'
 import { flowRight as compose } from 'lodash';
+import { updateUserProfileMutation } from '../../mutations/mutation'
 
 export class Profile extends Component {
     state = {
@@ -93,25 +94,9 @@ export class Profile extends Component {
             [inp.target.name]: inp.target.value,
             errorMessage: " "
         })
-
-        // if ('^\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4}')$.test(inp.target.value)) {
-        //     this.setState({
-        //         error: false,
-        //         [inp.target.name]: inp.target.value,
-        //         errorMessage: " "
-        //     })
-        // } 
-        // else {
-        //     this.setState({
-        //         error: true,
-        //         errorMessage: "Please write in standard format",
-        //         [inp.target.name]: ""
-        //     })
-        // }
     }
     handleOnSubmit = e => {
         e.preventDefault();
-        console.log(this.state);
         if (this.state.name == "") {
             this.setState({
                 error: true,
@@ -125,83 +110,46 @@ export class Profile extends Component {
             })
         }
         else if (!this.state.error) {
-            axios
-                .put(BACKEND_URL + "/users/editprofile", this.state).then(response => {
-                    if (response.status === 200) {
-                        if (this.state.profileImageUpdate) {
-                            console.log("object")
-                            const formData = new FormData();
-                            formData.append('profileImage', this.state.updatedProfileImage, this.state.updatedProfileImage.name + "," + this.state.userID)
-                            const config = {
-                                headers: {
-                                    'content-type': 'multipart/form-data'
-                                }
-                            }
-                            for (var value of formData.values()) {
-                                console.log(value);
-                            }
-                            axios
-                                .post(BACKEND_URL + '/users/uploadprofileimage', formData, config).then((response) => {
-                                    this.setState({
-                                        profileImagePath: BACKEND_URL + '/images/profilepics/' + cookie.load('id') + '/' + response.data.fileName
-
-                                    })
-                                }).catch(err => {
-                                    toast.error("Error in image upload")
-                                })
-                        }
-                        if (cookie.load('email') !== this.state.email) {
-                            cookie.remove("email", {
-                                path: '/'
-                            });
-                            cookie.save("email", this.state.email, {
-                                path: '/',
-                                httpOnly: false,
-                                maxAge: 90000
-                            })
-                        }
-                        if (cookie.load('name') !== this.state.name) {
-                            cookie.remove("name", {
-                                path: '/'
-                            });
-                            cookie.save("name", this.state.name, {
-                                path: '/',
-                                httpOnly: false,
-                                maxAge: 90000
-                            })
-                        }
-                        if (cookie.load('defaultcurrency') !== this.state.defaultcurrency) {
-                            cookie.remove("defaultcurrency", {
-                                path: '/'
-                            });
-                            cookie.save("defaultcurrency", this.state.defaultcurrency, {
-                                path: '/',
-                                httpOnly: false,
-                                maxAge: 90000
-                            })
-                        }
-                        if (cookie.load('timezone') !== this.state.timezone) {
-                            cookie.remove("timezone", {
-                                path: '/'
-                            });
-                            cookie.save("timezone", this.state.timezone, {
-                                path: '/',
-                                httpOnly: false,
-                                maxAge: 90000
-                            })
-                        }
-                        window.location.assign("/profile");
+            this.props.updateUserProfileMutation({
+                variables: {
+                    name: this.state.name,
+                    email: this.state.email,
+                    phoneno: this.state.phoneno,
+                    defaultcurrency: this.state.defaultcurrency,
+                    language: this.state.language,
+                    timezone: this.state.timezone,
+                }
+            }).then((response) => {
+                console.log(response)
+                if (response.data.updateUserProfile.email !== null) {
+                    if (cookie.load('email') !== this.state.email) {
+                        cookie.remove("email", {
+                            path: '/'
+                        });
+                        cookie.save("email", this.state.email, {
+                            path: '/',
+                            httpOnly: false,
+                            maxAge: 90000
+                        })
                     }
+                    if (cookie.load('name') !== this.state.name) {
+                        cookie.remove("name", {
+                            path: '/'
+                        });
+                        cookie.save("name", this.state.name, {
+                            path: '/',
+                            httpOnly: false,
+                            maxAge: 90000
+                        })
+                    }
+                    alert("User update succesfully")
+                    // window.location.assign("/users/about");
 
-                }).catch(err => {
-                    console.log(err.response);
-                    this.setState({
-                        errorMessage: err.response.data,
-                        emailError: true
-                    })
-                })
+                } else {
+                    console.log("error")
+                }
+            });
         }
-
     }
     async componentDidMount() {
         try {
@@ -217,17 +165,12 @@ export class Profile extends Component {
                 this.setState({
                     userID: response.data.getUserProfile._id,
                     name: response.data.getUserProfile.name,
-                    nickName: response.data.getUserProfile.nickName,
                     email: response.data.getUserProfile.email,
-                    contactNumber: response.data.getUserProfile.contactNumber,
-                    dateOfBirth: response.data.getUserProfile.dateOfBirth,
-                    city: response.data.getUserProfile.city,
-                    state: response.data.getUserProfile.state,
-                    country: response.data.getUserProfile.country,
-                    headline: response.data.getUserProfile.headline,
-                    yelpingSince: response.data.getUserProfile.yelpingSince,
-                    thingsILove: response.data.getUserProfile.thingsILove,
-                    blogLink: response.data.getUserProfile.blogLink,
+                    language: response.data.getUserProfile.language,
+                    phoneno: response.data.getUserProfile.phoneno,
+                    timezone: response.data.getUserProfile.timezone,
+                    defaultcurrency: response.data.getUserProfile.defaultcurrency,
+
                     // profileImagePath: profile_picture
                 })
 
@@ -305,10 +248,10 @@ export class Profile extends Component {
                 { redirectTo}
                 <div class="container" style={{ "marginLeft": '250px', "marginTop": '20px' }}>
                     <div class="row">
-                        <div class="col-sm">
+                        <div class="col-sm" style={{ marginTop: "50px" }}>
                             <div className="row"><h2 style={{ "marginLeft": '20px' }}>
                                 Your Account</h2></div>
-                            <img src={this.state.profileImagePath} width="200" height="200" alt="" />
+                            <img src={this.state.profileImagePath} style={{ paddingRight: "500px" }} width="200" height="200" alt="" />
 
                             <div className="row"><p style={{ "margin-left": '20px' }}>Change your Avatar</p></div>
                             <div className="row">
@@ -318,12 +261,14 @@ export class Profile extends Component {
                         <div class="col-sm">
                             <form onSubmit={this.handleOnSubmit}>
                                 <div className="row" style={{ "marginLeft": '-300px', "marginTop": '30px' }}>
-                                    <div className="col-3">
+                                    <div className="col-3" style={{ "marginTop": "30px" }}>
                                         <label>Your Name:</label>
                                         <input type="text" className="form-control" name="name"
                                             placeholder={this.state.name} onChange={this.handleInputChange} />
                                     </div>
                                     <div className="col-3" style={{ "marginTop": "30px" }}>
+                                        <label>Currency</label>
+
                                         <Select
                                             options={currency}
                                             placeholder={this.state.defaultcurrency}
@@ -331,13 +276,15 @@ export class Profile extends Component {
                                     </div>
                                 </div>
                                 <div className="row" style={{ "marginLeft": '-300px', "marginTop": '30px' }}>
-                                    <div className="col-3">
+                                    <div className="col-3" style={{ "marginTop": "30px" }}>
                                         <label>Your Email:</label>
                                         <input type="text" className="form-control" name="email"
                                             placeholder={this.state.email} onChange={this.handleEmailChange} />
                                         {emailError}
                                     </div>
                                     <div className="col-3" style={{ "marginTop": "30px" }}>
+                                        <label>Timezone</label>
+
                                         <Select
                                             options={timezone}
                                             placeholder={this.state.timezone}
@@ -345,13 +292,15 @@ export class Profile extends Component {
                                     </div>
                                 </div>
                                 <div className="row" style={{ "marginLeft": '-300px', "marginTop": '30px' }}>
-                                    <div className="col-3">
+                                    <div className="col-3" style={{ "marginTop": "30px" }}>
                                         <label>Your Phone No:</label>
                                         <input type="number" className="form-control" name="phoneno"
                                             placeholder={this.state.phoneno} onChange={this.handleNumberChange} />
                                     </div>
 
                                     <div className="col-3" style={{ "marginTop": "30px" }}>
+                                        <label>Language</label>
+
                                         <Select
                                             options={language}
                                             placeholder={this.state.language}
@@ -360,7 +309,7 @@ export class Profile extends Component {
                                 </div>
                                 {renderError}
 
-                                <button type="submit" className="btn btn-success" style={{ "backgroundColor": "#FF8C00", "marginTop": "100px", "marginLeft": "-100px" }} onSubmit={this.handleSubmit}>Save</button>
+                                <button type="submit" className="btn btn-success" style={{ "backgroundColor": "#FF8C00", "marginTop": "100px", "marginLeft": "-700px" }} onSubmit={this.handleSubmit}>Save</button>
                             </form>
                         </div>
                     </div>
@@ -372,5 +321,7 @@ export class Profile extends Component {
 export default compose(
     withApollo,
     graphql(getUserProfile, { name: "getUserProfile" }),
+    graphql(updateUserProfileMutation, { name: "updateUserProfileMutation" }),
+
 
 )(Profile);

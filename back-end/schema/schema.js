@@ -22,11 +22,23 @@ const userType = new GraphQLObjectType({
         language: { type: GraphQLString },
         timezone: { type: GraphQLString },
         phoneno: { type: GraphQLString },
-        defaultCurrency: { type: GraphQLString },
+        defaultcurrency: { type: GraphQLString },
         image: { type: GraphQLString },
     })
 });
 
+const groupType = new GraphQLObjectType({
+    name: 'group',
+    fields: () => ({
+        _id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        timing: { type: GraphQLString },
+        count: { type: GraphQLString },
+        members: {
+            type: new GraphQLList(membersType),
+        }
+    })
+});
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
@@ -59,6 +71,25 @@ const RootQuery = new GraphQLObjectType({
                 }).catch(error => {
                     console.log("error", error)
                     return "404"
+
+                })
+            }
+        },
+        getUserProfile: {
+            type: userType,
+            args: {
+                email: {
+                    type: GraphQLString
+                }
+            },
+            resolve(parent, args) {
+                console.log("In fetch owner profile " + args.email)
+                return users.findOne({ "email": args.email }).then(doc => {
+
+                    return doc
+                }).catch(error => {
+                    console.log("error", error)
+                    return error
 
                 })
             }
@@ -132,6 +163,41 @@ const Mutation = new GraphQLObjectType({
                 })
             }
         },
+        updateUserProfile: {
+            type: userType,
+            args: {
+                name: { type: GraphQLString },
+                email: { type: GraphQLString },
+                phoneno: { type: GraphQLString },
+                language: { type: GraphQLString },
+                timezone: { type: GraphQLString },
+                defaultcurrency: { type: GraphQLString },
+            },
+            resolve(parent, args) {
+
+                return users.findOneAndUpdate({ email: args.email },
+                    {
+                        $set: {
+                            name: args.name,
+                            email: args.email,
+                            phoneno: args.phoneno,
+                            language: args.language,
+                            timezone: args.timezone,
+                            defaultcurrency: args.defaultcurrency,
+                        }
+                    }, { new: true }
+                ).then(response => {
+                    console.log("Update successfull")
+                    return response
+                }).catch(error => {
+                    console.log("Error in update", error)
+                    return error
+                })
+
+
+            }
+        },
+
     }
 }
 )

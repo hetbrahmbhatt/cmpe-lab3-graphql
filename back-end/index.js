@@ -11,6 +11,8 @@ var multer = require('multer');
 var cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
 var schema = require("./schema/schema")
+var userSchema = require("./models/user")
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -27,18 +29,35 @@ app.use(
         }
     })
 );
-
-
+app.get('/users/searchbyname', (req, res) => {
+    userSchema.find({ "name": { $regex: req.query.name_like } }).then(response => {
+        console.log(response)
+        res.status(200).send(response)
+        // callback(null/, response)
+    }
+    ).catch(error => {
+        console.log("Error in update", error)
+        // callback(error, null)
+    })
+});
+app.get('/users/searchbyemail', (req, res) => {
+    userSchema.find({ "email": { $regex: req.query.email_like } }).then(response => {
+        console.log(response)
+        res.status(200).send(response)
+    }
+    ).catch(error => {
+        console.log("Error in update", error)
+        // callback(error, null)
+    })
+});
 
 app.use("/graphql", graphqlHTTP({
     schema,
     graphiql: true
 }));
-
-
 //get index page
 app.get('/', (req, res) => {
-    res.send('Welcome to yelp');
+    res.send('Welcome to splitwise');
 });
 
 //starting the server

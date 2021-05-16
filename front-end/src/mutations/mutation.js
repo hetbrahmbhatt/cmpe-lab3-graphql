@@ -19,4 +19,47 @@ const userSignUpMutation = gql`
         }
     }
 `;
-export { userSignUpMutation, userLogin };
+
+const updateUserProfileMutation = gql`
+    mutation updateUserProfile(
+        $name:String,   
+        $email:String,
+        $phoneno:String,
+        $language:String,
+        $timezone:String,
+        $defaultcurrency:String,
+    ){
+        updateUserProfile(  name:$name,   
+                            email:$email,
+                            phoneno:$phoneno,
+                            language:$language,
+                            timezone:$timezone,
+                            defaultcurrency:$defaultcurrency,
+                        ){
+            email
+        }
+    }
+`;
+
+const addGroupMutation = gql`
+    mutation addGroupMutation(
+        $name:String,   
+        $email:String,
+        $phoneno:String,
+        $language:String,
+        $timezone:String,
+        $defaultcurrency:String,
+    ){
+        updateUserProfile(  name:$name,   
+                            email:$email,
+                            phoneno:$phoneno,
+                            language:$language,
+                            timezone:$timezone,
+                            defaultcurrency:$defaultcurrency,
+                        ){
+            email
+        }
+    }
+`;
+
+export { userSignUpMutation, userLogin, updateUserProfileMutation };

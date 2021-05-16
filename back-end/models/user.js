@@ -60,7 +60,7 @@ var userSchema = new Schema({
     language: String,
     timezone: { type: String, default: "America/Los_Angeles" },
     phoneno: String,
-    defaultCurrency: { type: String, default: "$" },
+    defaultcurrency: { type: String, default: "$" },
     image: String,
     messages: [messageSchema],
     invitedGroups: [invitedGroupSchema],

@@ -6,6 +6,7 @@ import login from './login/login'
 import logout from './login/logout';
 import Navbar from './landing-page/navbar';
 import Profile from './user/profile';
+import NewGroup from './groups/new-group';
 
 export class Routing extends Component {
     render() {
@@ -17,6 +18,7 @@ export class Routing extends Component {
                 <Route path='/login' component={login} />
                 <Route path='/logout' component={logout} />
                 <Route path='/profile' component={Profile} />
+                <Route path='/new-group' component={NewGroup} />
 
             </div>
         )
