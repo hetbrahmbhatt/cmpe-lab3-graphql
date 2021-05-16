@@ -12,5 +12,20 @@ query getUserProfile($email: String){
     }
   }
 `;
-
-export { getUserProfile };
+const getGroupDetails = gql`
+query getGroupDetails($id: String){
+  getGroupDetails(id:$id){
+        acceptedGroups{
+          groupID,
+          groupName,
+          invitedBy
+        }
+        invitedGroups{
+          groupID,
+          groupName,
+          invitedBy
+        }
+    }
+  }
+`;
+export { getUserProfile, getGroupDetails };

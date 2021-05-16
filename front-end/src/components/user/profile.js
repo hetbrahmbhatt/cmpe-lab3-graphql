@@ -6,9 +6,10 @@ import axios from 'axios';
 import BACKEND_URL from '../../config/config'
 import Select from 'react-select'
 import { graphql, withApollo } from 'react-apollo';
+import { flowRight as compose } from 'lodash';
+
 import { Query } from "react-apollo";
 import { getUserProfile } from '../../queries/queries'
-import { flowRight as compose } from 'lodash';
 import { updateUserProfileMutation } from '../../mutations/mutation'
 
 export class Profile extends Component {

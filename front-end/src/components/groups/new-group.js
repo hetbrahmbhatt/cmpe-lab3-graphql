@@ -6,6 +6,9 @@ import AsyncSelect from 'react-select/async'
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { Redirect } from 'react-router'
+import { addGroupMutation } from '../../mutations/mutation'
+import { flowRight as compose } from 'lodash';
+import { graphql, withApollo } from 'react-apollo';
 
 export class NewGroup extends Component {
     state = {
@@ -85,6 +88,29 @@ export class NewGroup extends Component {
             return;
         }
         if (!this.state.error) {
+            console.log(this.props)
+            var membersValue = [];
+            console.log(this.state.selectedUsers)
+            var membersLabel = [];
+
+            for (let i = 0; i < this.state.selectedUsers.length; i++) {
+                membersValue.push(this.state.selectedUsers[i].value)
+            }
+            for (let i = 0; i < this.state.selectedUsers.length; i++) {
+                membersLabel.push(this.state.selectedUsers[i].label)
+            }
+            this.props.addGroupMutation({
+                variables: {
+                    userID: cookie.load('id'),
+                    userName: cookie.load('name'),
+                    groupName: this.state.groupName,
+                    membersValue: membersValue,
+                    membersLabel: membersLabel
+                }
+                //refetchQueries: [{ query: getBooksQuery }]
+            }).then((response) => {
+                console.log(response)
+            })
             // console.log(this.state);
             // axios
             //     .post(BACKEND_URL + "/groups/new", this.state).then(response => {
@@ -186,4 +212,9 @@ export class NewGroup extends Component {
         )
     }
 }
-export default NewGroup
+export default compose(
+    withApollo,
+    graphql(addGroupMutation, { name: "addGroupMutation" }),
+
+
+)(NewGroup);

@@ -42,24 +42,43 @@ const updateUserProfileMutation = gql`
 `;
 
 const addGroupMutation = gql`
-    mutation addGroupMutation(
-        $name:String,   
-        $email:String,
-        $phoneno:String,
-        $language:String,
-        $timezone:String,
-        $defaultcurrency:String,
+    mutation addGroup(
+        $userID:String,   
+        $userName:String,   
+        $groupName:String,
+        $membersValue : [String],
+        $membersLabel : [String]
+
     ){
-        updateUserProfile(  name:$name,   
-                            email:$email,
-                            phoneno:$phoneno,
-                            language:$language,
-                            timezone:$timezone,
-                            defaultcurrency:$defaultcurrency,
-                        ){
-            email
-        }
+        addGroup(  
+            userID:$userID,   
+            groupName:$groupName,
+            membersValue : $membersValue,
+            membersLabel : $membersLabel,
+            userName: $userName,   
+
+        )
     }
 `;
+const updateGroupStatusMutation = gql`
+    mutation updateGroupStatus(
+        $userID:String,
+        $groupID:String,
+        $type:String,
+        $userName:String,
+        $groupName : String
 
-export { userSignUpMutation, userLogin, updateUserProfileMutation };
+    ){
+        updateGroupStatus(  
+            userID :$userID,
+            groupID : $groupID,
+            type : $type,
+            userName : $userName,
+            groupName : $groupName
+                        ){
+                            groupID,
+                            groupName
+                        }
+    }
+`;
+export { userSignUpMutation, userLogin, addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };
