@@ -28,4 +28,15 @@ query getGroupDetails($id: String){
     }
   }
 `;
-export { getUserProfile, getGroupDetails };
+const getGroupSummaryDetails = gql`
+query groupSummaryDetails($groupID: String){
+  groupSummaryDetails(groupID:$groupID){
+      groupName,
+      description,
+      amount,
+      settleFlag,
+      createdAt
+  }
+  }
+`;
+export { getUserProfile, getGroupDetails, getGroupSummaryDetails };

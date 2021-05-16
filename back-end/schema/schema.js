@@ -9,6 +9,7 @@ var DebtsSchema = require('../models/debts')
 var bcrypt = require('bcrypt');
 var groupSchema = require('../models/groups')
 var ObjectId = require('mongodb').ObjectID;
+const groupSummary = require('../models/groupSummary');
 
 
 const {
@@ -90,6 +91,27 @@ const somegroupType = new GraphQLObjectType({
 
     })
 });
+
+var groupSummaryType = new GraphQLObjectType({
+    name: 'groupSummary',
+    fields: () => ({
+        groupName: { type: GraphQLString },
+        description: { type: GraphQLString },
+        amount: { type: GraphQLString },
+        settleFlag: { type: GraphQLString },
+        userID: { type: GraphQLString },
+        createdAt: { type: GraphQLString },
+    })
+});
+
+
+const groupSummaryReturn = new GraphQLObjectType({
+    name: 'groupSummaryReturn',
+    fields: () => ({
+        groupSummaryDetails: { type: new GraphQLList(groupSummaryType) }
+    })
+
+})
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
@@ -130,6 +152,20 @@ const RootQuery = new GraphQLObjectType({
                     return error
 
                 })
+            }
+        },
+        groupSummaryDetails: {
+            type: groupSummaryReturn,
+            args: {
+                groupID: {
+                    type: GraphQLString
+                }
+            },
+            async resolve(parent, args) {
+                console.log(args.groupID)
+                const docs = await groupSummarySchema.find({ groupID: args.groupID }).sort({ createdAt: '-1' })
+                console.log("jhsbchjbsahjcbasjhasbchja", docs)
+                return docs;
             }
         },
     }

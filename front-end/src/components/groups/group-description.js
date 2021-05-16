@@ -11,6 +11,9 @@ import grocerylogo from '../../images/grocery.png'
 import camera from '../../images/camera.png'
 import emptyplaceholder from '../../images/empty-placeholder.png'
 import profilePhoto from '../../images/profile-icon.png'
+import { graphql, withApollo } from 'react-apollo';
+import { flowRight as compose } from 'lodash';
+import { getGroupSummaryDetails } from '../../queries/queries'
 
 const customStyles = {
     content: {
@@ -65,6 +68,16 @@ export class GroupDescription extends Component {
         }
     }
     async componentDidMount() {
+        this.props.client.query({
+            query: getGroupSummaryDetails,
+
+            variables: {
+                groupID: this.state.groupID
+            }
+        }).then(response => {
+            console.log(response)
+        })
+        console.log(this.props)
         console.log(this.state)
         const groupID = this.state.groupID;
         const response = await axios.get(BACKEND_URL + "/groups/description/" + groupID);
@@ -346,4 +359,9 @@ export class GroupDescription extends Component {
     }
 }
 
-export default GroupDescription
+export default compose(
+    withApollo,
+    graphql(getGroupSummaryDetails, { name: "getGroupBalanceSummaryDetails" }),
+
+
+)(GroupDescription);
