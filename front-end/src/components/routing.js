@@ -9,6 +9,7 @@ import Profile from './user/profile';
 import NewGroup from './groups/new-group';
 import MyGroup from './groups/my-group';
 import GroupDescription from './groups/group-description';
+import DashBoard from './user/dashboard';
 
 export class Routing extends Component {
     render() {

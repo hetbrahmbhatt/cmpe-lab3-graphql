@@ -69,11 +69,18 @@ var leaveGroupType = new GraphQLObjectType({
     fields: () => ({
         userID: { type: GraphQLString },
         groupID: { type: GraphQLString },
+        amount: { type: GraphQLString }
 
     })
 })
 
+const leaveGroupTypeReturn = new GraphQLObjectType({
+    name: 'leaveGroupReturn',
+    fields: () => ({
+        leaveGroupTypeReturn: { type: new GraphQLList(leaveGroupType) }
+    })
 
+})
 
 const updateGroupStatusType = new GraphQLObjectType({
     name: 'updateGroupStatusType',
@@ -124,6 +131,29 @@ const groupSummaryReturn = new GraphQLObjectType({
     })
 
 })
+
+var totalInternalDebtType = new GraphQLObjectType({
+    name: 'totalinternalDebt',
+    fields: () => ({
+        groupName: { type: GraphQLString },
+        description: { type: GraphQLString },
+        amount: { type: GraphQLString },
+        settleFlag: { type: GraphQLString },
+        userID: { type: GraphQLString },
+        createdAt: { type: GraphQLString },
+    })
+});
+
+
+const totalInternalDebtReturn = new GraphQLObjectType({
+    name: 'totalinternalDebtReturn',
+    fields: () => ({
+        totalInternalDebt: { type: new GraphQLList(totalInternalDebtType) }
+    })
+
+})
+
+
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
@@ -166,6 +196,36 @@ const RootQuery = new GraphQLObjectType({
                 })
             }
         },
+        getTotalPositiveBalance: {
+            type: groupSummaryReturn,
+            args: {
+                id: {
+                    type: GraphQLString
+                }
+            },
+            async resolve(parent, args) {
+                const docs = await groupBalanceSchema.aggregate(
+                    [
+                        // First Stage
+                        {
+                            $match: {
+                                userID: args.id,
+
+                                amount: { $gt: 0 }
+                            }
+                        },
+                        {
+                            $group:
+                            {
+                                _id: "$currency",
+                                amount: { $sum: "$amount" }
+                            }
+                        },
+                    ]
+                )
+                console.log(docs)
+            }
+        },
         groupSummaryDetails: {
             type: groupSummaryReturn,
             args: {
@@ -177,23 +237,27 @@ const RootQuery = new GraphQLObjectType({
                 console.log(args.groupID)
                 const docs = await groupSummarySchema.find({ groupID: args.groupID }).sort({ createdAt: '-1' })
                 console.log("jhsbchjbsahjcbasjhasbchja", docs)
-                return docs;
+                return { groupSummaryDetails: docs };
             }
         },
         getTotalInternalBalance: {
-            type: new GraphQLList(groupSummaryType),
+            type: totalInternalDebtReturn,
             args: {
                 groupID: {
                     type: GraphQLString
                 }
             },
             async resolve(parent, args) {
-                DebtsSchema.find({ groupID: args.groupID }).then(docs => {
-                    console.log(docs)
-                    return docs;
+                const docs = await DebtsSchema.find({ groupID: args.groupID }).sort({ createdAt: '-1' })
+                console.log(docs);
+                return { totalInternalDebt: docs };
 
-                    // res.status(200).send(docs)
-                });
+                // DebtsSchema.find({ groupID: args.groupID }).then(docs => {
+                //     console.log(docs)
+                //     return {getInternalBalance : docs};
+
+                //     // res.status(200).send(docs)
+                // });
             }
         },
     }
@@ -235,7 +299,7 @@ const Mutation = new GraphQLObjectType({
             }
         },
         leaveGroup: {
-            type: leaveGroupType,
+            type: new GraphQLList(leaveGroupType),
             args: {
                 userID: {
                     type: GraphQLString
@@ -259,8 +323,10 @@ const Mutation = new GraphQLObjectType({
                         }
                     ]
                 }).then(response => {
-                    console.log("Response",response)
+                    console.log("Response", response)
                     if (response.length != 0) {
+                        console.log(JSON.stringify(response));
+                        return "hi"
                     }
                     else {
                         userSchema.findByIdAndUpdate({ _id: args.userID }

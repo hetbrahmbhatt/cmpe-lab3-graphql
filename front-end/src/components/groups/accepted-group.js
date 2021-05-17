@@ -8,6 +8,8 @@ import _ from 'lodash';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { graphql, withApollo } from 'react-apollo';
+import splitwiseLogo from '../../images/splitwiseLogo.png'
+
 import { flowRight as compose } from 'lodash';
 import { leaveGroupMutation } from '../../mutations/mutation'
 export class AcceptedGroup extends Component {
@@ -34,8 +36,8 @@ export class AcceptedGroup extends Component {
     leaveGroup = (e) => {
         this.props.leaveGroupMutation(
             {
-            userID :cookie.load('id'),
-            groupID : this.state.groupID
+                userID: cookie.load('id'),
+                groupID: this.state.groupID
             }
         )
     }
@@ -90,7 +92,9 @@ export class AcceptedGroup extends Component {
                     <div className="col-2 " style={{ marginTop: "10px" }}>
                         <div className="row p-1 m-2"><h4></h4></div>
                         <div className="row p-1 m-2"><h4></h4></div>
-                        {this.displayPicture(this.state.image, this.state.groupID)}
+                        <img src={splitwiseLogo} width="100" height="100" alt="" />
+
+                        {/* {this.displayPicture(this.state.image, this.state.groupID)} */}
                     </div>
                     <div className='col-4'>
                         <div className="row p-1 m-3"><h6>Group Name</h6></div>
@@ -101,9 +105,9 @@ export class AcceptedGroup extends Component {
 
                 </div>
                 <div className="row p-4" style={{ marginLeft: "50px" }}>
-                    <div className="col-2">
-                        {/* <div className="row" ><h6>{editOption}</h6></div> */}
-                    </div>
+                <div className="edit-option" >
+                    <button className="btn btn-warning" onClick={this.toggleGroupPopUp}>Edit Group</button>
+                </div>
 
                     <div className="col-2" style={{ marginLeft: "40px" }}>
                         <div className="row" >{groupDescriptionOption}</div>

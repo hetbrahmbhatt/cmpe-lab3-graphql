@@ -50,4 +50,4 @@ query groupSummaryDetails($groupID: String){
   }
   }
 `;
-export { getUserProfile, getGroupDetails, getGroupSummaryDetails,getTotalInternalBalance };
+export { getUserProfile, getGroupDetails, getGroupSummaryDetails, getTotalInternalBalance };

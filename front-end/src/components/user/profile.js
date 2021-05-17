@@ -7,6 +7,7 @@ import BACKEND_URL from '../../config/config'
 import Select from 'react-select'
 import { graphql, withApollo } from 'react-apollo';
 import { flowRight as compose } from 'lodash';
+import splitwiseLogo from '../../images/splitwiseLogo.png'
 
 import { Query } from "react-apollo";
 import { getUserProfile } from '../../queries/queries'
@@ -252,7 +253,8 @@ export class Profile extends Component {
                         <div class="col-sm" style={{ marginTop: "50px" }}>
                             <div className="row"><h2 style={{ "marginLeft": '20px' }}>
                                 Your Account</h2></div>
-                            <img src={this.state.profileImagePath} style={{ paddingRight: "500px" }} width="200" height="200" alt="" />
+                            {/* <img src={splitwiseLogo} style={{ paddingRight: "500px" }} width="200" height="200" alt="" /> */}
+                            <img  src={splitwiseLogo} width="200" height="200" alt="" />
 
                             <div className="row"><p style={{ "margin-left": '20px' }}>Change your Avatar</p></div>
                             <div className="row">
@@ -310,7 +312,7 @@ export class Profile extends Component {
                                 </div>
                                 {renderError}
 
-                                <button type="submit" className="btn btn-success" style={{ "backgroundColor": "#FF8C00", "marginTop": "100px", "marginLeft": "-700px" }} onSubmit={this.handleSubmit}>Save</button>
+                                <button type="submit" className="btn btn-success" style={{ "backgroundColor": "#FF8C00", "marginTop": "100px", "marginLeft": "-300px" }} onSubmit={this.handleSubmit}>Save</button>
                             </form>
                         </div>
                     </div>

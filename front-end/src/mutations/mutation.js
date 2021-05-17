@@ -123,4 +123,4 @@ const leaveGroupMutation = gql`
 `;
 
 
-export { userSignUpMutation, userLogin, addExpenseMutation, leaveGroupMutation,addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };
+export { userSignUpMutation, userLogin, addExpenseMutation, leaveGroupMutation, addGroupMutation, updateGroupStatusMutation, updateUserProfileMutation };

@@ -9,6 +9,7 @@ import { Redirect } from 'react-router'
 import { addGroupMutation } from '../../mutations/mutation'
 import { flowRight as compose } from 'lodash';
 import { graphql, withApollo } from 'react-apollo';
+import splitwiseLogo from '../../images/splitwiseLogo.png'
 
 export class NewGroup extends Component {
     state = {
@@ -186,7 +187,7 @@ export class NewGroup extends Component {
                 <div className="row" style={{ "height": "100vh" }}>
                     <div className="col-3"></div>
                     <div className="col-2">
-                        <img src={this.state.profileImagePath} width="200" height="200" alt="" />
+                        <img src={splitwiseLogo} width="200" height="200" alt="" />
                         <div className="row p-1 m-3">
                             <input style={{ "marginLeft": '20px' }} accept="image/x-png,image/gif,image/jpeg" type="file" name="profileImage" onChange={this.handleImageChange} />
                         </div>
